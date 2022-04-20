@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace类似类上的packge(包名)： 必须和调用的Mapper的全类名一致
+-->
+<mapper namespace="com.atguigu.mybatis.mappers.EmployeeMapper">
+
+    <!--
+            是什么语句就用什么标签。
+
+            id： 语句在namespace中的唯一标识。 必须和Mapper中所调用这条sql的方法名一致
+
+            resultType： 语句查询的结果集中每一行要封装为的Bean的类型
+
+
+            原生JDBC： ? 作为占位符
+            在Mysql中:  #{xxxx} 作为占位符
+                xxxx怎么写?
+                    如果只有一个占位符，xxxx可以随便写
+                    如果从一个对象中，读取对象的属性作为占位符的值，那么xxxx就和对象的属性名一致！
+
+
+    -->
+    <select id="getEmployeeById" resultType="com.atguigu.mybatis.beans.Employee">
+    select * from tbl_employee where id = #{fjhaoleilfhaiolfja;}
+    </select>
+
+    <select id="getAll" resultType="com.atguigu.mybatis.beans.Employee">
+
+        select * from tbl_employee
+
+    </select>
+
+    <delete id="deleteEmployeeById">
+
+        delete  from tbl_employee where id=#{id}
+
+    </delete>
+
+    <insert id="insertEmployee">
+
+        insert  into tbl_employee(last_name,gender,email) values(#{lastName},#{gender},#{email})
+
+    </insert>
+
+    <update id="updateEmployee">
+        update tbl_employee set last_name=#{lastName} , gender=#{gender} ,email=#{email}
+        where id = #{id}
+
+    </update>
+</mapper>

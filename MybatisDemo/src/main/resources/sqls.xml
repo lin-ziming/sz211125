@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace类似类上的packge(包名)： 目前可以随便写
+-->
+<mapper namespace="feichangbang">
+
+    <!--
+            是什么语句就用什么标签。
+
+            查询一号员工
+
+            id： 语句在namespace中的唯一标识
+            resultType： 语句查询的结果集中每一行要封装为的Bean的类型
+
+
+            原生JDBC： ? 作为占位符
+            在Mysql中:  #{xxxx} 作为占位符
+                xxxx怎么写?
+                    如果只有一个占位符，xxxx可以随便写
+    -->
+    <select id="sql1" resultType="com.atguigu.mybatis.beans.Employee">
+    select * from tbl_employee where id = #{fjhaoleilfhaiolfja;}
+  </select>
+</mapper>
