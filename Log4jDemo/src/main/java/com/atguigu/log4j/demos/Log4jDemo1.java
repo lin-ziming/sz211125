@@ -20,5 +20,7 @@ public class Log4jDemo1 {
         logger.error("error:haha");
         logger.fatal("fatal:haha");
 
+        //做了修改
+
     }
 }
