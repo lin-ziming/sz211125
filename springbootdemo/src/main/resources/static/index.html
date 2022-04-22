@@ -12,7 +12,33 @@
 
         你<br/>好
         <hr/>
-        <a href="hello">发送hello请求,返回a页面</a>
+        <!--
+            http://localhost:8081/springbootdemo/hello
+            http://主机名:端口号/hello
+                               /hello
+
+            只能写绝对路径，必须以/开头，都需要在路径上多加一层项目路径
+        -->
+        <a href="/springbootdemo/hello">发送hello请求,返回a页面</a>
+        <hr/>
+        <a href="/springbootdemo/getData1">请求返回字面量数据</a><br/>
+        <a href="/springbootdemo/getData2">请求返回非字面量数据</a>
+        <hr/>
+        <a href="/springbootdemo/sendParam?username=jack&age=30">发送参数</a>
+        <hr/>
+        <!--
+            action: url地址
+        -->
+        <form action="sendParam">
+            <!--
+                name: 属性名
+                value: 属性值，给用户填的
+            -->
+            username:<input name="username" value=""><br/>
+            age:     <input name="age" value=""><br/>
+            <input  value="提交按钮" type="submit"><br/>
+
+        </form>
 
 </body>
 </html>
