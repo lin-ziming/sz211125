@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>员工操作</title>
+</head>
+<body>
+        <form action="/springbootdemo/emp" >
+            <input type="radio" name="op" value="select">查询
+            <input type="radio" name="op" value="insert">新增
+            <input type="radio" name="op" value="delete">删除
+            <input type="radio" name="op" value="update">更新</br>
+            id: <input name="id" value=""> </br>
+            name:<input name="lastname" value="">  </br>
+            gender:<input name="gender" value="">   </br>
+            email:<input name="email" value="">   </br>
+            <input  value="操作" type="submit">
+        </form>
+        <a href="/springbootdemo/getAllEmp">查询所有员工</a>
+</body>
+</html>
