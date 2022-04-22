@@ -4,9 +4,106 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.5.10.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
     <groupId>com.atguigu</groupId>
     <artifactId>1125</artifactId>
+    <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
+
+    <!--
+        放子模块
+    -->
+    <modules>
+        <module>gmall_common</module>
+        <module>gmall_logger</module>
+    </modules>
+
+    <!--
+            整个项目中依赖的管理，Module的聚合(批量操作)
+    -->
+    <!--
+            定义项目中所使用的不同的框架的版本号
+                如何使用:  ${spark.version} = 3.0.0
+    -->
+    <properties>
+        <spark.version>3.0.0</spark.version>
+        <scala.version>2.12.10</scala.version>
+        <log4j.version>1.2.17</log4j.version>
+        <fastjson.version>1.2.47</fastjson.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <kafka.client.verson>2.4.1</kafka.client.verson>
+    </properties>
+
+    <!--
+           dependencies: 放的依赖会被子module无条件(无需声明)继承(拥有)
+    -->
+    <dependencies>
+        <!-- 具体的日志实现 -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+    </dependencies>
+
+    <!--
+           dependencyManagement:  放的依赖需要 子module明确声明，才会拥有
+    -->
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.spark</groupId>
+                <artifactId>spark-core_2.12</artifactId>
+                <version>${spark.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.spark</groupId>
+                <artifactId>spark-hive_2.12</artifactId>
+                <version>${spark.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.spark</groupId>
+                <artifactId>spark-sql_2.12</artifactId>
+                <version>${spark.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.spark</groupId>
+                <artifactId>spark-streaming_2.12</artifactId>
+                <version>${spark.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.spark</groupId>
+                <artifactId>spark-streaming-kafka-0-10_2.12</artifactId>
+                <version>${spark.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>${kafka.client.verson}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
 
 
 </project>
