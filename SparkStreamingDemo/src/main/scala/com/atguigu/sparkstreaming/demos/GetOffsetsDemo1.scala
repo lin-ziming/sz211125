@@ -1,5 +1,6 @@
 package com.atguigu.sparkstreaming.demos
 
+import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.spark.TaskContext
 import org.apache.spark.streaming.dstream.DStream
@@ -35,6 +36,18 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
  *                          算子进行计算!
  *
  *
+ *        ------------------------------------------
+ * Exception in thread "main" java.lang.ClassCastException:
+ *    org.apache.spark.rdd.MapPartitionsRDD
+ *      cannot be cast to
+ *    org.apache.spark.streaming.kafka010.HasOffsetRanges: 唯一实现 KafkaRDD
+ *
+ *
+ *        val ranges: Array[OffsetRange] = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
+ *        必须使用初始DStream调用foreachRDD或transform才能转换成功！
+ *            只有KafkaUtils.createDirectStream 返回的DStream里面封装的才是KafkaRDD！
+ *
+ *
  *
  *
  */
@@ -64,7 +77,10 @@ object GetOffsetsDemo1 {
       Subscribe[String, String](topics, kafkaParams)
     )
 
-    val ds1: DStream[String] = stream.transform(rdd => {
+
+
+
+    val ds2: DStream[ConsumerRecord[String, String]] = stream.transform(rdd => {
 
       val ranges: Array[OffsetRange] = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
 
@@ -72,11 +88,13 @@ object GetOffsetsDemo1 {
         println(elem)
       }
 
-      rdd.map(record => record.value())
+      rdd
 
     })
 
-    ds1.print(1000)
+    val ds3: DStream[String] = ds2.map(record => record.value())
+
+    ds3.print(1000)
 
 
 

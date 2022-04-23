@@ -1,27 +1,24 @@
 package com.atguigu.sparkstreaming.demos
 
 import org.apache.kafka.common.serialization.StringDeserializer
-import org.apache.spark.streaming.dstream.DStream
+import org.apache.spark.rdd.RDD
 import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
 import org.apache.spark.streaming.kafka010._
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
 /**
- * Created by Smexy on 2022/4/23
  *
- *    at least once:
- *          ①取消自动提交offsets
- *          ②在输出后，手动提交
+ *
+ *
  */
-object AtLeastOnceDemo1 {
+object CommitOffsetsDemo {
 
   def main(args: Array[String]): Unit = {
 
     val streamingContext = new StreamingContext("local[*]", "simpledemo", Seconds(5))
 
 
-    // 准备消费者参数
     val kafkaParams = Map[String, Object](
       "bootstrap.servers" -> "hadoop102:9092,hadoop103:9092",
       "key.deserializer" -> classOf[StringDeserializer],
@@ -33,9 +30,8 @@ object AtLeastOnceDemo1 {
       "enable.auto.commit" -> "false"
     )
 
-    // 指定要消费的主题  通常情况下，一个stream只消费一个topic
     val topics = Array("topicA")
-    // 创建一个Stream
+
     val stream = KafkaUtils.createDirectStream[String, String](
       streamingContext,
       PreferConsistent,
@@ -43,8 +39,28 @@ object AtLeastOnceDemo1 {
     )
 
 
+    stream.foreachRDD { rdd =>
 
-    // *****手动提交偏移量
+      if (!rdd.isEmpty()){
+
+        // 获取偏移量
+        val ranges: Array[OffsetRange] = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
+
+        // 转换运算
+        val rdd1: RDD[String] = rdd.map(record => record.value())
+
+        // 输出到控制台
+        rdd1.foreach(str => println(Thread.currentThread().getName + "---->"+str))
+
+        //提交偏移量
+        stream.asInstanceOf[CanCommitOffsets].commitAsync(ranges)
+
+      }
+
+
+    }
+
+
 
     streamingContext.start()
 
