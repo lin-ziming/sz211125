@@ -2,16 +2,17 @@ package com.atguigu.sparkstreaming.demos
 
 import org.apache.kafka.common.serialization.StringDeserializer
 import org.apache.spark.rdd.RDD
-import org.apache.spark.streaming.dstream.DStream
 import org.apache.spark.streaming.kafka010.ConsumerStrategies.Subscribe
 import org.apache.spark.streaming.kafka010.LocationStrategies.PreferConsistent
 import org.apache.spark.streaming.kafka010._
 import org.apache.spark.streaming.{Seconds, StreamingContext}
 
-/*
-    at least once + 幂等输出
+/**
+ *
+ *
+ *
  */
-object CommitOffsetsErrorDemo2 {
+object ExactlyOnceDemo {
 
   def main(args: Array[String]): Unit = {
 
@@ -23,6 +24,7 @@ object CommitOffsetsErrorDemo2 {
       "key.deserializer" -> classOf[StringDeserializer],
       "value.deserializer" -> classOf[StringDeserializer],
       "group.id" -> "sz211125",
+      // latest从最近位置消费，earliest:如果当前组从来没有消费过这个主题，从主题的最开始位置消费
       "auto.offset.reset" -> "latest",
       // ******是否允许自动提交offset
       "enable.auto.commit" -> "false"
@@ -36,22 +38,29 @@ object CommitOffsetsErrorDemo2 {
       Subscribe[String, String](topics, kafkaParams)
     )
 
-    stream.foreachRDD(rdd => {
+
+    stream.foreachRDD { rdd =>
 
       if (!rdd.isEmpty()){
+
         // 获取偏移量
-        val offsetRanges: Array[OffsetRange] = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
+        val ranges: Array[OffsetRange] = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
 
-        // 各种转换
-        //*****幂等输出
-        //xxxxxx
+        // 转换运算
+        val rdd1: RDD[String] = rdd.map(record => record.value())
 
-        //******提交偏移量
-        // 必须是DirectKafkaInputDStream类型，才能转换成功
-        stream.asInstanceOf[CanCommitOffsets].commitAsync(offsetRanges)
+        // 输出到控制台
+        rdd1.foreach(str => println(Thread.currentThread().getName + "---->"+str))
+
+        //提交偏移量
+        stream.asInstanceOf[CanCommitOffsets].commitAsync(ranges)
+
       }
 
-    })
+
+    }
+
+
 
     streamingContext.start()
 
