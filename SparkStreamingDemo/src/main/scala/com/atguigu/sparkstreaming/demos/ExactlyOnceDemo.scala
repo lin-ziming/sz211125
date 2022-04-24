@@ -46,11 +46,9 @@ object ExactlyOnceDemo {
         // 获取偏移量
         val ranges: Array[OffsetRange] = rdd.asInstanceOf[HasOffsetRanges].offsetRanges
 
-        // 转换运算
-        val rdd1: RDD[String] = rdd.map(record => record.value())
+        // 各种转换
 
-        // 输出到控制台
-        rdd1.foreach(str => println(Thread.currentThread().getName + "---->"+str))
+        // 保证幂等输出
 
         //提交偏移量
         stream.asInstanceOf[CanCommitOffsets].commitAsync(ranges)
