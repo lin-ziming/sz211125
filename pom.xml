@@ -23,6 +23,7 @@
         <module>gmall_common</module>
         <module>gmall_logger</module>
         <module>gmall_realtime</module>
+        <module>gmall_publisher</module>
     </modules>
 
     <!--

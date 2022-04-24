@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace类似类上的packge(包名)： 必须和调用的Mapper的全类名一致
+-->
+<mapper namespace="com.atguigu.gmall_publisher.mapper.DAUMapper">
+
+
+    <!--
+            java中定义的基本数据类型及其包装类，可以简写
+                    java.lang.Integer ====> int
+                    java.lang.Double  ====> double
+
+                    gmall2022_startuplog:
+                            粒度 ： 一行是一个设备一天中的唯一一条启动日志
+     -->
+    <select id="getDAUByDate" resultType="int">
+
+        select
+                count(*)
+        from gmall2022_startuplog
+        where logDate = #{date}
+
+    </select>
+
+
+    <!--
+        resultType: 查询的一行封装的Bean的类型
+
+        sql查询的列名要和Bean的属性名对应!
+    -->
+    <select id="getDAUDataByDate" resultType="com.atguigu.gmall_publisher.bean.DAUData">
+         select
+                logHour hour,
+                count(*) count
+        from gmall2022_startuplog
+        where logDate = #{date}
+        group by logHour
+
+    </select>
+
+    <!--
+        gmall2022_startuplog: 每个设备在每一天最早的启动日志
+
+        如何求出今天哪些设备是新来的?
+                sql实现差集运算:  a left join b on a.xx = b.xx where b.xx is null
+
+              < 在xml需要转义! <会被误认为是标签的开始!
+                    < 转义为  &lt;
+                    > 转义为  &gt;
+    -->
+    <select id="getNewMidCount" resultType="int">
+
+        select
+            count(*)
+        from
+            (
+                select
+                    mid
+                from gmall2022_startuplog
+                where logDate = #{date}
+            )today_data
+        left join
+             (
+                select
+                    mid
+                from gmall2022_startuplog
+                where logDate &lt; #{date}
+                group by mid
+            )today_before_data
+        on today_data.mid = today_before_data.mid
+        where today_before_data.mid is null
+
+
+    </select>
+</mapper>
