@@ -24,6 +24,7 @@
         <module>gmall_logger</module>
         <module>gmall_realtime</module>
         <module>gmall_publisher</module>
+        <module>gmall_canalclient</module>
     </modules>
 
     <!--

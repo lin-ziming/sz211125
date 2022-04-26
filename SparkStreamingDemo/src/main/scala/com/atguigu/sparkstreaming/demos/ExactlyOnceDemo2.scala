@@ -61,7 +61,7 @@ import scala.collection.mutable
  */
 object ExactlyOnceDemo2 {
 
-  val groupId="211125test3"
+  val groupId="211125test4"
 
   val topicName="topicA"
 
@@ -246,7 +246,7 @@ object ExactlyOnceDemo2 {
       "value.deserializer" -> classOf[StringDeserializer],
       "group.id" -> "sz211125",
       // latest从最近位置消费，earliest:如果当前组从来没有消费过这个主题，从主题的最开始位置消费
-      "auto.offset.reset" -> "latest",
+      //"auto.offset.reset" -> "latest",
       // ******是否允许自动提交offset
       "enable.auto.commit" -> "false"
     )
