@@ -48,10 +48,11 @@ object ExactlyOnceDemo {
 
         // 各种转换
 
-        // 保证幂等输出
+        // 保证幂等输出  hbase
 
         //提交偏移量
-        stream.asInstanceOf[CanCommitOffsets].commitAsync(ranges)
+        //stream.asInstanceOf[CanCommitOffsets].commitAsync(ranges)
+        // 提交到Mysql
 
       }
 

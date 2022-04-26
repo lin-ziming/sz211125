@@ -20,6 +20,14 @@ import redis.clients.jedis.Jedis
 
 /**
  * Created by Smexy on 2022/4/24
+ *
+ *
+ *    ①同批次去重:
+ *          把同一天，同一个设备号所产生的所有日志，汇总到一个组
+ *              groupBy
+ *              map......groupByKey
+ *          从组中挑选出ts最小的那条，返回
+ *              map..... toList.sortBy.take
  */
 object DAUApp extends BaseApp {
 
