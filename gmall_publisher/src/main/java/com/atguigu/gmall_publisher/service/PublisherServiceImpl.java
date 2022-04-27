@@ -1,7 +1,9 @@
 package com.atguigu.gmall_publisher.service;
 
 import com.atguigu.gmall_publisher.bean.DAUData;
+import com.atguigu.gmall_publisher.bean.GMVData;
 import com.atguigu.gmall_publisher.mapper.DAUMapper;
+import com.atguigu.gmall_publisher.mapper.GMVMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +53,30 @@ public class PublisherServiceImpl implements  PublisherService {
         System.out.println("查询之后...");
 
         return dauDataByDate;
+    }
+    @Autowired
+    private GMVMapper gmvMapper;
+
+    @Override
+    public Double getGMVByDate(String date) {
+
+        System.out.println("查询之前...");
+
+        Double gmvByDate = gmvMapper.getGMVByDate(date);
+
+        System.out.println("查询之后...");
+
+        return gmvByDate;
+    }
+
+    @Override
+    public List<GMVData> getGMVDataByDate(String date) {
+        System.out.println("查询之前...");
+
+        List<GMVData> gmvDataByDate = gmvMapper.getGMVDataByDate(date);
+
+        System.out.println("查询之后...");
+
+        return gmvDataByDate;
     }
 }

@@ -1,6 +1,7 @@
 package com.atguigu.gmall_publisher.mapper;
 
 import com.atguigu.gmall_publisher.bean.DAUData;
+import com.baomidou.dynamic.datasource.annotation.DS;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.List;
  * Created by Smexy on 2022/4/24
  */
 @Repository
+@DS("hbase")
 public interface DAUMapper {
 
     // http://localhost:8070/realtime-total?date=2021-08-15

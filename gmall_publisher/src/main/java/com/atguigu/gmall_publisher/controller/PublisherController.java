@@ -2,6 +2,7 @@ package com.atguigu.gmall_publisher.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.atguigu.gmall_publisher.bean.DAUData;
+import com.atguigu.gmall_publisher.bean.GMVData;
 import com.atguigu.gmall_publisher.service.PublisherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,8 @@ public class PublisherController {
          [
             {"id":"dau","name":"当日日活数","value":1200},
             {"id":"new_mid","name":"新增设备数","value":233}
+
+            {"id":"order_amount","name":"当日交易额","value":1000.2 }
          ]
 
          []: List 或 JSONArray
@@ -43,6 +46,9 @@ public class PublisherController {
         Integer dauByDate = publisherService.getDAUByDate(date);
         Integer count = publisherService.getNewMidCount(date);
 
+        //查询当日gmv
+        Double gmvByDate = publisherService.getGMVByDate(date);
+
         JSONObject jo1 = new JSONObject();
         jo1.put("id","dau");
         jo1.put("name","当日日活数");
@@ -55,10 +61,17 @@ public class PublisherController {
         jo2.put("name","新增设备数");
         jo2.put("value",count);
 
+        JSONObject jo3 = new JSONObject();
+
+        jo3.put("id","order_amount");
+        jo3.put("name","当日交易额");
+        jo3.put("value",gmvByDate);
+
         ArrayList<JSONObject> result = new ArrayList<>();
 
         result.add(jo1);
         result.add(jo2);
+        result.add(jo3);
 
         return result;
 
@@ -66,8 +79,15 @@ public class PublisherController {
 
     /*
         http://localhost:8070/   realtime-hours  ?id=dau&  date=2021-08-15
-
+            DAU
         {
+        "yesterday":{"11":383,"12":123,"17":88,"19":200 },
+            "today":{"12":38,"13":1233,"17":123,"19":688 }
+        }
+
+        http://localhost:8070/realtime-hours?id=order_amount&date=2020-08-18
+            GMV
+         {
         "yesterday":{"11":383,"12":123,"17":88,"19":200 },
             "today":{"12":38,"13":1233,"17":123,"19":688 }
         }
@@ -82,14 +102,25 @@ public class PublisherController {
 
         String yesterStr = localDate.minusDays(1).toString();
 
-        List<DAUData> todayData = publisherService.getDAUDataByDate(date);
-        List<DAUData> yestodayData = publisherService.getDAUDataByDate(yesterStr);
-
-
         JSONObject result = new JSONObject();
 
-        result.put("yesterday",parseDAUData(yestodayData));
-        result.put("today",parseDAUData(todayData));
+        if ("dau".equals(id)){
+
+            List<DAUData> todayData = publisherService.getDAUDataByDate(date);
+            List<DAUData> yestodayData = publisherService.getDAUDataByDate(yesterStr);
+
+            result.put("yesterday",parseDAUData(yestodayData));
+            result.put("today",parseDAUData(todayData));
+        }else if("order_amount".equals(id)){
+
+            List<GMVData> todayData = publisherService.getGMVDataByDate(date);
+            List<GMVData> yestodayData = publisherService.getGMVDataByDate(date);
+
+
+            result.put("yesterday",parseGMVData(yestodayData));
+            result.put("today",parseGMVData(todayData));
+
+        }
 
         return result;
 
@@ -103,6 +134,20 @@ public class PublisherController {
         for (DAUData d : data) {
 
             result.put(d.getHour(),d.getCount());
+
+        }
+
+        return result;
+
+    }
+
+    public JSONObject parseGMVData(List<GMVData> data){
+
+        JSONObject result = new JSONObject();
+
+        for (GMVData d : data) {
+
+            result.put(d.getHour(),d.getGmv());
 
         }
 

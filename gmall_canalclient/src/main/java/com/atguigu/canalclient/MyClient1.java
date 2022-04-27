@@ -5,6 +5,7 @@ import com.alibaba.otter.canal.client.CanalConnector;
 import com.alibaba.otter.canal.client.CanalConnectors;
 import com.alibaba.otter.canal.protocol.CanalEntry;
 import com.alibaba.otter.canal.protocol.Message;
+import com.atguigu.gmall.constants.TopicConstant;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
 
@@ -128,7 +129,9 @@ public class MyClient1 {
 
                 }
 
-                System.out.println(jsonObject);
+                // 生成到kafka
+               // System.out.println(jsonObject);
+                MyProducer.sendData(TopicConstant.GMALL_ORDER_INFO,jsonObject.toJSONString());
 
             }
 

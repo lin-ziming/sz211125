@@ -36,7 +36,7 @@ object MyKafkaUtil {
       ds = KafkaUtils.createDirectStream[String, String](
         ssc,
         LocationStrategies.PreferConsistent,
-        ConsumerStrategies.Subscribe[String, String](topics, kafkaParam,offsetsMap)
+        ConsumerStrategies.Assign[String, String](offsetsMap.keys, kafkaParam,offsetsMap)
       )
     }else{
 

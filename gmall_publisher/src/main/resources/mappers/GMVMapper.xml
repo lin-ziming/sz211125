@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace类似类上的packge(包名)： 必须和调用的Mapper的全类名一致
+-->
+<mapper namespace="com.atguigu.gmall_publisher.mapper.GMVMapper">
+
+
+    <!--
+            java中定义的基本数据类型及其包装类，可以简写
+                    java.lang.Integer ====> int
+                    java.lang.Double  ====> double
+
+                    gmall2022_startuplog:
+                            粒度 ： 一行是一个设备一天中的唯一一条启动日志
+     -->
+    <select id="getGMVByDate" resultType="double">
+
+        select
+                sum(gmv)
+        from gmvstats
+        where create_date = #{date}
+
+    </select>
+
+
+    <!--
+        resultType: 查询的一行封装的Bean的类型
+
+        sql查询的列名要和Bean的属性名对应!
+    -->
+    <select id="getGMVDataByDate" resultType="com.atguigu.gmall_publisher.bean.GMVData">
+         select
+                create_hour hour,
+                sum(gmv) gmv
+        from gmvstats
+        where create_date = #{date}
+        group by create_hour
+
+    </select>
+
+
+</mapper>

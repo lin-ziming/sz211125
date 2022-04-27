@@ -74,6 +74,22 @@
             <version>2.7.2</version>
         </dependency>
 
+        <!--
+               baomidou 是一个数据源切换工具
+                    有一部分数据需要从hbase查询，还有一部分数据需要从mysql查询，需要从不同的数据源查询不同的数据。
+                    需要为Mapper指定不同的数据源，方便切换!
+        -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+            <version>2.4.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+
 
     </dependencies>
 
