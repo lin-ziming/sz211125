@@ -80,7 +80,7 @@
             <version>1.0.5</version>
         </dependency>
 
-        <!--<dependency>
+      <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch-hadoop</artifactId>
             <version>6.6.0</version>
@@ -88,11 +88,15 @@
 
 
 
+        <!--
+                http客户端，允许用java代码发送http请求。
+                ES的本质用 REST 请求 ES
+        -->
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
-        </dependency>-->
+        </dependency>
 
 
     </dependencies>
