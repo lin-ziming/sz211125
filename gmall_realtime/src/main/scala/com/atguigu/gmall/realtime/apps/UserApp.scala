@@ -27,7 +27,7 @@ import redis.clients.jedis.Jedis
  * value:  string
  */
 object UserApp extends BaseApp {
-  override var groupName: String = "sz1125"
+  override var groupName: String = "sz1125group2"
   override var batchDuration: Int = 5
   override var appName: String = "UserApp"
 
@@ -52,9 +52,15 @@ object UserApp extends BaseApp {
 
             val jedis: Jedis = RedisUtil.getJedisClient()
 
-            println("写出:"+partition.size)
+            val list: List[ConsumerRecord[String, String]] = partition.toList
 
-            partition.foreach(record => {
+            // 这个地方 partition已经迭代完了
+            //println("当前写入:" + partition.size)
+
+            // 对一个Iterator多次迭代，需要把它转为集合
+            println("当前写入:" + list.size)
+
+            list.foreach(record => {
 
               val map: JSONObject = JSON.parseObject(record.value())
 

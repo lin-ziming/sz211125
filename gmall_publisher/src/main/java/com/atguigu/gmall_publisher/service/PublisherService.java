@@ -1,8 +1,10 @@
 package com.atguigu.gmall_publisher.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.atguigu.gmall_publisher.bean.DAUData;
 import com.atguigu.gmall_publisher.bean.GMVData;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -26,4 +28,7 @@ public interface PublisherService {
 
     // 查询一天中各小时GMV
     List<GMVData> getGMVDataByDate(String date);
+
+    JSONObject getESData(String date111, Integer startpage, Integer size , String keyword) throws IOException;
+
 }

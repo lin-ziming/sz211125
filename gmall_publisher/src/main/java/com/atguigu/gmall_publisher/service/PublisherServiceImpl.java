@@ -1,12 +1,15 @@
 package com.atguigu.gmall_publisher.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.atguigu.gmall_publisher.bean.DAUData;
 import com.atguigu.gmall_publisher.bean.GMVData;
+import com.atguigu.gmall_publisher.dao.ESDao;
 import com.atguigu.gmall_publisher.mapper.DAUMapper;
 import com.atguigu.gmall_publisher.mapper.GMVMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -78,5 +81,20 @@ public class PublisherServiceImpl implements  PublisherService {
         System.out.println("查询之后...");
 
         return gmvDataByDate;
+    }
+
+    @Autowired
+    private ESDao esDao;
+
+    @Override
+    public JSONObject getESData(String date111, Integer startpage, Integer size, String keyword) throws IOException {
+
+        System.out.println("查询之前...");
+
+        JSONObject jsonObject = esDao.getESData(date111, startpage, size, keyword);
+
+        System.out.println("查询之后...");
+
+        return jsonObject;
     }
 }

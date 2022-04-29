@@ -55,7 +55,8 @@ import scala.util.control.Breaks
  *
  *            -----------
  *
- * 一天的订单，存储一个k-v
+ * 一天的订单，存储一个k-v。 用hash存在，
+ * expire 是key级别设置!
  *      orderInfo: 1  orderInfo: 2
  *
  *
@@ -82,7 +83,7 @@ import scala.util.control.Breaks
  */
 object SaleDetailApp extends  BaseApp {
   override var groupName: String = "sz1125group1"
-  override var batchDuration: Int = 10
+  override var batchDuration: Int = 30
   override var appName: String = "SaleDetailApp"
 
   def parseOrderInfoRecord(rdd: RDD[ConsumerRecord[String, String]]): RDD[(String,OrderInfo)] = {
@@ -177,7 +178,7 @@ object SaleDetailApp extends  BaseApp {
               }
 
               //②不确定后续是否还有晚到的orderDetail，无条件写入缓存，等待后续出现的orderDetail
-              jedis.set(PrefixConstant.order_info_redis_preffix + orderInfo.id, gson.toJson(orderInfo))
+              jedis.setex(PrefixConstant.order_info_redis_preffix + orderInfo.id, PrefixConstant.max_delay_time , gson.toJson(orderInfo))
 
               //③可能会有早到的OrderDetail，去缓存中读取早到的orderDetail，进行join
               val earlyComingOrderDetails: util.Set[String] = jedis.smembers(PrefixConstant.order_detail_redis_preffix + orderId)
@@ -209,6 +210,8 @@ object SaleDetailApp extends  BaseApp {
                 //在缓存中找不到早到的orderInfo,否则，读不到，说明OrderDetail早到了，需要写入缓存等后续批次的OrderInfo
                 jedis.sadd(PrefixConstant.order_detail_redis_preffix + orderDetail.order_id, gson.toJson(orderDetail))
 
+                jedis.expire(PrefixConstant.order_detail_redis_preffix + orderDetail.order_id, PrefixConstant.max_delay_time)
+
               }
 
             }
@@ -232,24 +235,8 @@ object SaleDetailApp extends  BaseApp {
 
         val saleDetails: Iterator[SaleDetail] = partition.map(saleDetail => {
 
-          var userStr: String = null
+          val userStr: String = jedis.get(PrefixConstant.user_info_redis_preffix + saleDetail.user_id)
 
-          Breaks.breakable{
-
-            while (true){
-
-              Thread.sleep(1500)
-
-              userStr = jedis.get(PrefixConstant.user_info_redis_preffix + saleDetail.user_id)
-
-              if (userStr != null){
-
-                Breaks.break()
-
-              }
-            }
-
-          }
           // 保证用户信息已经查到
           val userInfo: UserInfo = JSON.parseObject(userStr, classOf[UserInfo])
           saleDetail.mergeUserInfo(userInfo)
